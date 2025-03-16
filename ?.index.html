@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>46Days</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: monospace;
+            background: linear-gradient(145deg, #f0f0f0, #ffffff);
+        }
+        #progressBar {
+            font-size: clamp(18px, 3vw, 24px);
+            letter-spacing: 2px;
+            margin: 20px 0;
+            color: #2ecc71;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        #percentageInfo {
+            font-size: clamp(14px, 2vw, 18px);
+            color: #34495e;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="progressBar"></div>
+    <div id="percentageInfo"></div>
+
+    <script>
+        (function() {
+            const TOTAL_DAYS = 46;
+            const START_DATE = Date.UTC(2024, 2, 17);
+            
+            function calculateProgress() {
+                const now = new Date();
+                const todayUTC = Date.UTC(
+                    now.getUTCFullYear(),
+                    now.getUTCMonth(),
+                    now.getUTCDate()
+                );
+                const daysElapsed = Math.floor((todayUTC - START_DATE) / 864e5);
+                return Math.max(TOTAL_DAYS - daysElapsed, 0);
+            }
+
+            function updateDisplay() {
+                const remaining = calculateProgress();
+                const percentage = (remaining * (100 / TOTAL_DAYS)).toFixed(2);
+                const dailyRate = (100 / TOTAL_DAYS).toFixed(2);
+
+                document.getElementById('progressBar').textContent = 
+                    '█'.repeat(remaining) + '░'.repeat(TOTAL_DAYS - remaining);
+                
+                document.getElementById('percentageInfo').textContent = 
+                    `${percentage}% (每日下降${dailyRate}%)`;
+            }
+
+            updateDisplay();
+            
+
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) updateDisplay();
+            });
+            
+       
+            setInterval(updateDisplay, 6e4);
+        })();
+    </script>
+</body>
+</html>
